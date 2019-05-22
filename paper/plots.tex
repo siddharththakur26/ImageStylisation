@@ -1,0 +1,78 @@
+\documentclass{llncs}
+\usepackage{llncsdoc}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\usepackage{verbatim}
+
+\usepackage{placeins}
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+\let\Oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
+
+%\usepackage{unicode-math}
+
+%\usepgfplotslibrary{external} \tikzexternalize
+%\usetikzlibrary{pgfplots.external}
+
+\begin{document}
+\title{Evaluating Network Reduction Techniques with Human Eye Gaze Data}
+
+\newcommand{\one}[1]{
+}
+
+\newcommand{\avg}[1]{
+\addplot table [x=cycle, y expr=\thisrow{winavg}, col sep=comma] {#1};
+}
+
+
+\def \stdAO {
+legend pos = south east, 
+cycle list={cyan,magenta,teal,orange,violet,brown,black,pink,yellow,lime,red,green,blue,olive,purple,black!50!white},
+width=40em, %\expandafter{\textwidth}, 
+height=20em,
+no marks
+}
+
+\def \stdAOM {
+legend pos = outer north east, 
+cycle list={cyan,magenta,teal,orange,violet,brown,black,pink,yellow,lime,red,green,blue,olive,purple,black!50!white},
+width=34em, %\expandafter{\textwidth}, 
+height=20em,
+no marks
+}
+
+\newcommand{\cpt}[1]{
+\caption{Average reward vs. time for #1}
+}
+
+\begin{figure}
+\begin{tikzpicture}[trim axis left]
+\begin{axis}[ \stdAO , 
+%skip coords between index={0}{1}
+%each nth point = 50,
+filter discard warning=false
+]
+\addplot table [x index=0, y index={2}, col sep=tab] {out/00/l4H08.out};
+\addlegendentry{D=0 H=0}
+\end{axis}
+\end{tikzpicture}
+
+%\begin{tikzpicture}[trim axis left]
+%\begin{semilogxaxis}[ \stdAO , skip coords between index={0}{20}]
+%\five{coinflip}
+%\one{../logs/sp1-coinflip.csv}
+%\addlegendentry{D=0 H=0}
+%\end{semilogxaxis}
+%\end{tikzpicture}
+%\cpt{\label{cf} CoinFlip}
+\end{figure}
+
+
+\end{document}

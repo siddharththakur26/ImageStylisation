@@ -1,0 +1,122 @@
+\documentclass[runningheads]{llncs}
+\usepackage{graphicx}
+\usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
+\usepackage{amsmath,amssymb} % define this before the line numbering.
+%\usepackage{ruler}
+\usepackage{color}
+
+%\documentclass{llncs}
+%\usepackage{graphicx}
+%\usepackage{geometry}
+%\geometry{margin=2cm}
+%\usepackage{amsmath}
+
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\usepackage[caption=false]{subfig}
+\usepackage{listings}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+
+\begin{document}
+\title{Evaluating Network Reduction Techniques with Eye Gaze Data}
+\author{Xi Du}
+\institute{Australian National University, Australia\\
+\email{u6559090@anu.edu.au}}
+\maketitle 
+\begin{abstract}
+\cite{method}
+
+\keywords{Neural network, Deep learning, 
+Small data, Interpretability, Network pruning, Network reduction.}
+\end{abstract}
+
+\section{Introduction}
+
+\section{Literature Review}
+
+\section{Method}
+
+\subsection{Preliminary}
+
+\subsection{Implementation of the Network Reduction Technique}
+
+\subsection{Implementation of Neural Network}
+
+\subsubsection{Training Phase}
+
+\subsubsection{Testing Phase}
+
+\subsection{Data Set}
+
+\subsubsection {Format and Preparation}
+
+\subsubsection {(Not Really) Time-Series}
+
+\subsubsection {Rationale}
+
+\subsection{Hyperparameters and Experiments}
+
+\subsubsection{Activation Function}
+
+\subsubsection{Learning Rate}
+
+\subsubsection{Hidden Layer Size}
+
+\subsection{Evaluating Prediction}
+
+\subsubsection{Binarisation and Choice of Loss}
+
+\subsubsection{Amount of Network Reduction}
+
+\subsubsection{Mechanism} 
+
+\subsubsection{Execution}
+
+The program was developed under and are compatible with:
+\begin{itemize}
+\item Python 3.6
+\item PyTorch 1.0.1.post2
+\item CentOS 7 x86\_64
+\end{itemize}
+To run the code, execute shell commands like
+\begin{verbatim}
+python36 0.py 5000
+\end{verbatim}
+where 5000 is the number of desired training cycles to reach.
+The different hyperparameters will be automatically covered.
+The program automatically picks up stored models.
+To start fresh, clear the stored models and outputs by
+\begin{verbatim}
+rm out/*/*.*
+\end{verbatim}
+but do not remove the directories.
+
+
+\section{Results and Discussion}
+
+\section{Conclusion and Future Work}
+
+\begin{thebibliography}{8}
+\bibitem{data}
+Zhu, D., Mendis, B.S., Gedeon, T.D., Asthana, A., \& Göcke, R. (2008). A Hybrid Fuzzy Approach for Human Eye Gaze Pattern Recognition. ICONIP.
+\bibitem{method}
+Gedeon, T.D. and Harris, D. (1991) "Network Reduction Techniques," Proceedings International Conference on Neural Networks Methodologies and Applications, AMSE, San Diego, vol. 1: 119-126. 
+\bibitem{prune0}
+Penington, Jocelyn \& Dow, R.J.F.. (1988). Neural net pruning—Why and how. Proceedings of the IEEE Conference on Neural Networks. 1. 325 - 333 vol.1. 10.1109/ICNN.1988.23864. 
+\bibitem{interp}
+Doshi-Velez, F., \& Kim, B. (2017). Towards A Rigorous Science of Interpretable Machine Learning.
+\bibitem{example_prune}
+Han, S., Mao, H., \& Dally, W.J. (2016). Deep Compression: Compressing Deep Neural Network with Pruning, Trained Quantization and Huffman Coding. CoRR, abs/1510.00149.
+\bibitem{example_simplification}
+Sun, X., Ren, X., Ma, S., Wei, B., Li, W., \& Wang, H. (2018). Training Simplification and Model Simplification for Deep Learning: A Minimal Effort Back Propagation Method. CoRR, abs/1711.06528.
+\bibitem{example_compression}
+Cheng, Yu \& Wang, Duo \& Zhou, Pan \& Zhang, Tao. (2017). A Survey of Model Compression and Acceleration for Deep Neural Networks. 
+\bibitem{pytorch}
+Paszke, A., Gross, S., Chintala, S., Chanan, G., Yang, E., DeVito, Z., Lin, Z., Desmaison, A., Antiga, L., \& Lerer, A. (2017). Automatic differentiation in PyTorch.
+\end{thebibliography}
+\end{document}
+

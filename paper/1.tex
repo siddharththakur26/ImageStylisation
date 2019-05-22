@@ -1,0 +1,297 @@
+\documentclass{llncs}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{margin=2cm}
+\usepackage{mathtools}
+\usepackage{listings}
+
+\begin{document}
+\title{Contribution Title\thanks{Supported by organization x.}}
+\author{Xi, Du\inst{1}}
+\institute{Australian National University, Australia}
+\maketitle 
+\begin{abstract}
+While the recent surge of neural networks in the name of deep learning literally suggests larger and larger networks, 
+small networks have also received growing attention lately. 
+So has the technique to make a trained network smaller while keeping its inference ability,
+which is called network pruning or network reduction. 
+In this work, I briefly review some of the network reduction techniques and 
+experiment with one of the early methods \cite{method} using 
+a data set about human eye movement during reading \cite{data}
+
+\keywords{Neural network, Deep learning, 
+Small data, Interpretability, Network pruning, Network reduction.}
+\end{abstract}
+
+\section{Introduction}
+
+Deep as in deep learning,
+the word leading the current resurgence of neural networks in machine learning 
+and artificial intelligence,
+intrinsically means larger-than-before neural networks with more and more layers and,
+frequently but not necessarily,
+more neurons in each layer.
+However,
+larger networks not only consume more computational resource during training and inference,
+but are also harder to understand,
+analyze and debug when problems arise.
+Most importantly,
+overly complex networks usually lead to bad generalisation power.
+So given similar predictive power,
+it is desirable to use a smaller network whenever possible.
+In addition,
+although neural networks are said to be bad at this in general,
+smaller networks are still better in terms of interpretability,
+an emerging topic in machine learning \cite{interp}.
+
+\section{Literature Review}
+
+The first significant work to bring the size of a trained neural network 
+down was probably \cite{prune0},
+where the word ¿pruning¿ was used and started being the most widely used terminology
+for making a trained neural network smaller. 
+However, a drawback of this word is its connotations of simply removing neurons 
+without changing the remaining ones, 
+which is less interesting than changing weights of neurons so that they work equivalently 
+to a larger network. 
+This was probably the reason the method we based on was named network reduction \cite{method}.
+
+\section{Method}
+
+\subsection{Preliminary}
+
+First of all, my implementation and experimental setup 
+are concerned about a 3-layer network of a single 
+hidden layer of $H$ neurons. In the following discussion 
+$N$ stands for the number of entries in the training set.
+
+\subsection{Implementation of the Network Reduction Technique}
+
+The network reduction paper \cite{method} mentioned many ways in which 
+networks can be pruned. 
+However, only two ways were discussed in detail. 
+The first was considering whether a group of hidden layer units 
+can be removed or compressed into one. 
+Unfortunately, a straightforward implementation would require examining each 
+power set of hidden units, to the complexity of $O(2^H)$. 
+This is not feasible for any practically-sized neural network, 
+so I focused on the second technique, {\em Distinctiveness}.
+
+The {\em Distinctiveness} method examines each pair of hidden units, 
+and then combine them into one when they are similar enough in terms of 
+outputs of the training set, resulting in $O(H^2)$ tests, 
+which is much more manageable. 
+While there may be groups of three or more hidden units that can be collapsed into one, 
+they are already catered by the $O(n^2)$ tests. 
+For example, if hidden unit A and hidden unit B were deemed similar 
+enough to be combined into one, 
+and then hidden unit A and hidden unit C were deemed similar enough as well, 
+my implementation would remove B at first, then remove C, 
+adding weights to A accordingly. 
+
+The similarity between hidden units are established by comparing the angles 
+between the vectors of hidden unit outputs. 
+More specifically, a vector of the output of the hidden unit $A$, 
+is just the outputs of $A$ across training data point. 
+In my implementation, 
+these $N$-dimension vectors are computed all together at once into an $N\times H$ matrix, 
+avoiding an explicit loop. 
+Pythonic loops in PyTorch are extremely expensive and should be avoided whenever possible.
+While the original paper listed actual values of vector angles, 
+there is no real need to actually bother with an inverse trigonometry function. 
+Only the cosine is necessary, since I can threshold on the cosine value directly, 
+which is
+\begin{equation}
+\cos(\theta) = \frac{\vec{a}\cdot \vec{b} }{\lVert \vec{a}\rVert \lVert \vec{b}\rVert }
+\end{equation}
+where $\vec{a}$ and $\vec{b}$ are $N$-dimensional vectors.
+Because there are $H$ such vectors,
+we can consider the $H$ $N$-dimensional vectors together
+as one $H\times N$ matrix $h^T$,
+where its $N\times H$ transpose $h$ happens to be
+a natural occurence when training
+neural network with PyTorch.
+Then the $H^2$ dot products are computed with one $H\times N$ matrix
+\begin{equation}
+	P=h^Th~.
+\end{equation}
+The matrix $L$ of $H^2$ numerators can be computed in a similar fashion with
+matrix operations instead of explicit loops.
+Finally an $H\times H$ matrix $C$ of cosine values are computed 
+by an element-wise divison of $P$ over $L$.
+Note that $P$, $L$ and $C$ are all $H\times H$ symmetric matrices.
+While the the cosines between different points are computed twice this way, 
+it is still far more efficient than an explicit pythonic loop.
+
+Now that I have the matrix of cosines, I have to run an explicit loop
+to prune the hidden units.
+However, the pruning happens only after many cycles of training,
+so the cost is not a major issue compared to that of training.
+For each pair of hidden units $i$ and $j$ ($0<i<j<=H$ and $i,j$ actually stands
+for indices of hidden units), 
+when the absolute value of the cosine of their angle, that is $|C_{i,j}|$, is greater
+than a certain threshold $c$ where $0<=c<=1$, 
+the $j$th hidden unit is removed.
+In practice, I simply set its weight into the output layer to zero.
+The weight is multipled by the cosine value $C_{i,j}$ 
+and added to the out-going weight of $i$th hidden unit.
+Of course, in theory either $i$ or $j$ can be kept,
+but there is no obvious way to prefer one. 
+Randomisation is not necessary either, because the
+order of hidden units is already random in a sense.
+Multiplication by $C_{i,j}$ automatically takes care
+of the sign of the $C_{i,j}$. It may also be
+argued that multiplication by $C_{i,j}$ is 
+preferrable than simple addition and subtraction
+because the angle is not strictly $0^\circ$ or $180^\circ$.
+But I am already assuming that $|C_{i,j}|\simeq 1$, so it does not really matter.
+
+An additional condition for the pruning is that hidden unit $i$
+has not already been pruned, that is, its outgoing weight is not strictly zero.
+This is an exact floating point equality comparison
+arguably against common coding practice.
+The rationale is that I am using the exact zero as the flag for having been pruned.
+Even if a node happens to have zero outgoing weight immediately after training,
+I lose no accuracy by treating it as having been pruned.
+On the other hand, if I set the outgoing weight of hidden unit $j$ to zero
+and move the weight, I fail to actually reduce the number of hidden units.
+
+\subsection{Implementation of Neural Network}
+
+The neural network was implemented with PyTorch.
+Since the network is simple, I used 
+straightforward matrix (or tensor in PyTorch jargon) computations and autograd
+with very little content from \verb|torch.nn|.
+
+\subsubsection{Training}
+
+In the training phase,
+The input is treated as an $N\times D_{in}$ matrix $X$.
+$D_{in}$ is the dimensionality of the data, effectively $4$ for 
+the eye-gaze dataset \cite{data}.
+Weights from the input layer to the hidden layer is stored 
+in an $D_{in} \times H$ matrix $W_1$.
+Then obviously $XW_1$ becomes the inputs of activation functions.
+The activation functions are the same for the $H$ hidden units.
+However, I have made the activation function configurable in the program,
+enabling comparison of networks with different activation functions.
+The dimensionality of output, $D_{out}$ is 1 because this is a
+classification test.
+The weights from the hidden layer to the output layer form a 
+$H \times D_{out}$ matrix $W_2$.
+The outputs of the training set are
+an $H \times D_{out}$ matrix $Y$
+while the predicted outputs are $Y_{pred}$ of the same dimension.
+The prediction is computed by
+\begin{equation}
+Y_{pred} = hW_2~.
+\end{equation}
+Finally the back-propogation is handled by standard PyTorch
+autograd facility.
+
+\subsubsection{Testing}
+
+The testing phase is handled by exactly the same matrix operations
+of the training phase,
+albeit the dimensions of input and output matrices have $N'$ rows instead of $N$ rows,
+where $N'$ is the size of the test set.
+The autograd facility of PyTorch needs to be temporarily disabled with
+\verb|torch.no_grad()| when executing the testing phase.
+
+\subsection{Experiments}
+
+\section{First Section}
+\subsection{A Subsection Sample}
+Please note that the first paragraph of a section or subsection is
+not indented. The first paragraph that follows a table, figure,
+equation etc. does not need an indent, either.
+
+Subsequent paragraphs, however, are indented.
+
+\subsubsection{Sample Heading (Third Level)} Only two levels of
+headings should be numbered. Lower level headings remain unnumbered;
+they are formatted as run-in headings.
+
+\paragraph{Sample Heading (Fourth Level)}
+The contribution should contain no more than four levels of
+headings. Table~\ref{tab1} gives a summary of all heading levels.
+
+\begin{table}
+\caption{Table captions should be placed above the
+tables.}\label{tab1}
+\begin{tabular}{|l|l|l|}
+\hline
+Heading level &  Example & Font size and style\\
+\hline
+Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
+1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
+2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
+3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
+4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\noindent Displayed equations are centered and set on a separate
+line.
+\begin{equation}
+x + y = z
+\end{equation}
+Please try to avoid rasterized images for line-art diagrams and
+schemas. Whenever possible, use vector graphics instead (see
+Fig.~\ref{fig1}).
+
+\begin{theorem}
+This is a sample theorem. The run-in heading is set in bold, while
+the following text appears in italics. Definitions, lemmas,
+propositions, and corollaries are styled the same way.
+\end{theorem}
+%
+% the environments 'definition', 'lemma', 'proposition', 'corollary',
+% 'remark', and 'example' are defined in the LLNCS documentclass as well.
+%
+\begin{proof}
+Proofs, examples, and remarks have the initial word in italics,
+while the following text appears in normal font.
+\end{proof}
+For citations of references, we prefer the use of square brackets
+and consecutive numbers. Citations using labels or the author/year
+convention are also acceptable. The following bibliography provides
+a sample reference list with entries for journal
+articles~\cite{ref_article1}, an LNCS chapter~\cite{ref_lncs1}, a
+book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
+and a homepage~\cite{ref_url1}. Multiple citations are grouped
+\cite{ref_article1,ref_lncs1,ref_book1},
+\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
+%
+% ---- Bibliography ----
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+% \bibliographystyle{splncs04}
+% \bibliography{mybibliography}
+%
+\begin{thebibliography}{8}
+\bibitem{ref_article1}
+Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
+
+\bibitem{ref_lncs1}
+Author, F., Author, S.: Title of a proceedings paper. In: Editor,
+F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
+Springer, Heidelberg (2016).
+
+\bibitem{ref_book1}
+Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
+Location (1999)
+
+\bibitem{ref_proc1}
+Author, A.-B.: Contribution title. In: 9th International Proceedings
+on Proceedings, pp. 1--2. Publisher, Location (2010)
+
+\bibitem{ref_url1}
+LNCS Homepage, \url{http://www.springer.com/lncs}. Last accessed 4
+Oct 2017
+\end{thebibliography}
+\end{document}
