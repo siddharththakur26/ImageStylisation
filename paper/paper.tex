@@ -22,7 +22,7 @@ breaklines=true
 }
 
 \begin{document}
-\title{Evaluating Network Reduction Techniques with Eye Gaze Data}
+\title{Neural Network Transfer extended with Multiple Style Images}
 \author{Xi Du}
 \institute{Australian National University, Australia\\
 \email{u6559090@anu.edu.au}}
@@ -42,11 +42,9 @@ Small data, Interpretability, Network pruning, Network reduction.}
 
 \subsection{Preliminary}
 
-\subsection{Implementation of the Network Reduction Technique}
-
 \subsection{Implementation of Neural Network}
-
-\subsubsection{Training Phase}
+Since we are not training the neural network, 
+the model is just a sequence of functions on arrays.
 
 \subsubsection{Testing Phase}
 
@@ -60,7 +58,29 @@ Small data, Interpretability, Network pruning, Network reduction.}
 
 \subsection{Hyperparameters and Experiments}
 
-\subsubsection{Activation Function}
+For the vanilla style-transfer algorithm, there were a few hyper-parameters that 
+affected the result.
+\begin{itemize}
+\item Number of iterations in the optimization. 
+We did not have to expriment with different numbers of iterations though.
+It was more sensible to run the algorithm for more-than-enough iterations and store the intermediate results.
+\item Weights of style loss $k_S$ and content loss $k_C$ in the optimisation target. 
+Although these appeared to be two parameters,
+actually only their ratio $k_S/k_C$ mattered.
+We simply fixed $k_C=1$ and varied $k_S$.
+\item Choice of initial values. Some sensible choices were:
+\begin{itemize}
+\item White noise.
+\item White.
+\item Black.
+\item The model mean.
+\item The content image.
+\item The style image.
+\item The average of the content image and the style image.
+\end{itemize}
+\end{itemize}
+
+%\subsubsection{Activation Function}
 
 \subsubsection{Learning Rate}
 
@@ -101,8 +121,8 @@ but do not remove the directories.
 \section{Conclusion and Future Work}
 
 \begin{thebibliography}{8}
-\bibitem{data}
-Zhu, D., Mendis, B.S., Gedeon, T.D., Asthana, A., \& Göcke, R. (2008). A Hybrid Fuzzy Approach for Human Eye Gaze Pattern Recognition. ICONIP.
+\bibitem{nst}
+Gatys, L., Ecker, A., \& Bethge, M. (2016). A neural algorithm of artistic style. Journal of Vision, 16(12), 326. doi:10.1167/16.12.326
 \bibitem{method}
 Gedeon, T.D. and Harris, D. (1991) "Network Reduction Techniques," Proceedings International Conference on Neural Networks Methodologies and Applications, AMSE, San Diego, vol. 1: 119-126. 
 \bibitem{prune0}
