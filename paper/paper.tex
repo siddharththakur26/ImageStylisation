@@ -73,7 +73,7 @@ Though it is important to note that in our illustrations there are functions ins
 
 \subsection{vgg19 model}
 For the vgg19 model that most neural style transfer implementations available are based on,
-The inputs and outpus of each layer are all arrays with 4 dimensions.
+The inputs and outpus of each function are all arrays with 4 dimensions.
 The word ``dimension'' here may mean something slightly different from what ``dimension'' means in
 for example ``$3$-dimension vector''. 
 Some people call the number of dimensions ``rank'' which would then raise another confusion with the rank of matrices.
@@ -129,7 +129,17 @@ leave the weight of the style loss as a adjustable hyperparameter $k$.
 \argmin\limits_{\text{image}} (kL_\text{style}+L_\text{content})
 \end{align}
 
-The content loss is the easier one of the two losses.
+The content loss is the easier one to explain of the two losses.
+It is the mean square error between the outputs of a certain function in the
+vgg19 taking the current argument image and the content image as inputs respectively.
+We say ``a certain'' function because the output of which function to choose is
+adjustable.
+A typical choice is the output of \verb|conv_4| function. See Figure \ref{contentloss}.
+\begin{figure}
+\center
+\includegraphics[width=\textwidth]{contentloss.pdf}
+\caption{The content loss \label{contentloss}}
+\end{figure}
 
 \subsection{Data Set}
 
