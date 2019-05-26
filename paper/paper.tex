@@ -138,7 +138,7 @@ A typical choice is the output of \verb|conv_4| function. See Figure \ref{conten
 \begin{figure}
 \center
 \includegraphics[width=\textwidth]{contentloss.pdf}
-\caption{The content loss $L_{content}$ \label{contentloss}}
+\caption{The content loss \label{contentloss}}
 \end{figure}
 
 
@@ -155,15 +155,15 @@ in the image without the spatial information of where the features are.
 Gram matrices describe the distributions with correlation between features.
 The several style losses are computed with the outputs of different functions.
 Otherwise, each of the several style losses are computed in exactly the same way.
-
 Again outputs of which functions in the model to derive style losses from is really adjustable.
 A nice default is \verb|conv_1|,\verb|conv_2|,...,\verb|conv_5|. We illustrate
-the style losses derived \verb|conv_1| and \verb|conv_4| in Figure $\ref{stylelosses}$.
+the style losses derived from the output of \verb|conv_1| in Figure $\ref{styleloss}$.
 
-%\begin{figure}
-%\center
-%\includegraphics[width=\textwidth]{stylelosses}
-%\end{figure}
+\begin{figure}
+\center
+\includegraphics[width=\textwidth]{styleloss.pdf}
+\caption{The style loss derived from the output of conv\_1 \label{styleloss}}
+\end{figure}
 
 \subsection{Gram matrix}
 [[[[Elaborate on gram matrix here]]]]
@@ -174,27 +174,35 @@ apart from the general structure, is the use of Gram matrices to compare
 distributions of features in two images, so that where the features are does not matter.
 It gives really nice insight on what ``artistic style'' means.
 
-However, could we achieve the same results with other 
+Now we wonder, could we achieve similar results with other ways to compare 
+distribution of features?
+One approach would be to consider the \emph{comparison} as a whole to find 
+substitute. 
+For us, it seemed more natural to consider substitute to the process of 
+transforming feature maps to Gram matrices itself, that is, 
+a mapping that removes the spatial information of where features are but retains
+the distribution of features like a histogram.
+
+
 
 \section{Experiments and Discussion}
+
+\subsection{Varying the dislocator function}
+
+\subsection{Varying the extraction points for losses}
+
+We will also show that other factors, such that the outputs of which functions to derive the style 
+losses from are not very essential and somewhat belongs to tuning.
 
 \section{Conclusion and Future Work}
 
 \begin{thebibliography}{8}
 \bibitem{nst}
 Gatys, L., Ecker, A., \& Bethge, M. (2016). A neural algorithm of artistic style. Journal of Vision, 16(12), 326. doi:10.1167/16.12.326
-\bibitem{method}
-Gedeon, T.D. and Harris, D. (1991) "Network Reduction Techniques," Proceedings International Conference on Neural Networks Methodologies and Applications, AMSE, San Diego, vol. 1: 119-126. 
-\bibitem{prune0}
-Penington, Jocelyn \& Dow, R.J.F.. (1988). Neural net pruning—Why and how. Proceedings of the IEEE Conference on Neural Networks. 1. 325 - 333 vol.1. 10.1109/ICNN.1988.23864. 
+\bibitem{demyst}
+Li, Y., Wang, N., Liu, J., \& Hou, X. (2017). Demystifying Neural Style Transfer. IJCAI.
 \bibitem{interp}
 Doshi-Velez, F., \& Kim, B. (2017). Towards A Rigorous Science of Interpretable Machine Learning.
-\bibitem{example_prune}
-Han, S., Mao, H., \& Dally, W.J. (2016). Deep Compression: Compressing Deep Neural Network with Pruning, Trained Quantization and Huffman Coding. CoRR, abs/1510.00149.
-\bibitem{example_simplification}
-Sun, X., Ren, X., Ma, S., Wei, B., Li, W., \& Wang, H. (2018). Training Simplification and Model Simplification for Deep Learning: A Minimal Effort Back Propagation Method. CoRR, abs/1711.06528.
-\bibitem{example_compression}
-Cheng, Yu \& Wang, Duo \& Zhou, Pan \& Zhang, Tao. (2017). A Survey of Model Compression and Acceleration for Deep Neural Networks. 
 \bibitem{pytorch}
 Paszke, A., Gross, S., Chintala, S., Chanan, G., Yang, E., DeVito, Z., Lin, Z., Desmaison, A., Antiga, L., \& Lerer, A. (2017). Automatic differentiation in PyTorch.
 \end{thebibliography}
