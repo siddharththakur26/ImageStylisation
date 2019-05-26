@@ -150,13 +150,13 @@ and converted to Gram matrices. We will elabrate on what Gram matrices are later
 For now a Gram matrix is just a square matrix computed from a multidimensional array (i.e. a feature map).
 For example, the Gram matrix (in the style transfer algorithm) of a $1\times64\times512\times512$ array
 is a $64\times64$ matrix.
-The point is to compute something that describe the distributions of features
+The point is that a Gram matrix describes the distribution of features
 in the image without the spatial information of where the features are.
-Gram matrices describe the distributions with correlation between features.
+Gram matrices describe the distribution with correlation between features.
 The several style losses are computed with the outputs of different functions.
 Otherwise, each of the several style losses are computed in exactly the same way.
-Again outputs of which functions in the model to derive style losses from is really adjustable.
-A nice default is \verb|conv_1|,\verb|conv_2|,...,\verb|conv_5|. We illustrate
+Again, the outputs of which functions in the model to derive style losses from is really adjustable.
+A nice default we used was \verb|conv_1|,\verb|conv_2|,...,\verb|conv_5|. We illustrate
 the style losses derived from the output of \verb|conv_1| in Figure $\ref{styleloss}$.
 
 \begin{figure}
