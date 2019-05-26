@@ -22,7 +22,7 @@ breaklines=true
 }
 
 \begin{document}
-\title{Neural Network Transfer extended with Multiple Style Images}
+\title{Dissecting Neural Style Transfer}
 \author{Xi Du}
 \institute{Australian National University, Australia\\
 \email{u6559090@anu.edu.au}}
@@ -40,7 +40,49 @@ Small data, Interpretability, Network pruning, Network reduction.}
 
 \section{Method}
 
-\subsection{Preliminary}
+\subsection{Deep Neural Network}
+
+For the purpose of implementing and even extending neural style transfer algorithms,
+it is not necessary to understand how a neural network is trained, because
+we can use pretrained model for example vgg19 \cite{vgg19}.
+
+It is necessary to point out that a deep neural network that neural style transfer
+is concerend about
+is just a sequence of functions
+$F_1,F_2,F_3,...$
+whose inputs and outputs are all multi-dimensional arrays, as illustrated in Figure \ref{f1f2f3}.
+\begin{figure}
+\center
+\includegraphics[width=0.6\textwidth]{f1f2f3.pdf}
+\caption{A deep neural network \label{f1f2f3}}
+\end{figure}
+Because the arrays have usually more than two numbers of dimensions
+they are not really matrices.
+The arrays are called tensors (as in TensorFlow or torch.Tensor in PyTorch) 
+but actual tensor algebra in a mathematical sense is rarely relevant.
+The functions need to be differentiable, which is handled automatically by modern 
+deep learning frameworks.
+Other than that we can treat the functions as blackboxes because we are 
+not concerned of training the model.
+
+For the vgg19 model that most neural style transfer implementations available are based on,
+The inputs and outpus of each layer are all arrays with 4 dimensions.
+The word ``dimension'' here may mean something slightly different from what ``dimension'' means in
+for example ``$3$-dimension vector''. 
+Some people call the number of dimensions ``rank'' which would then raise another confusion with the rank of matrices.
+
+The 1st dimension is the ``batch'' dimension, which means that you can put several images through the
+series of functions.
+In neural style transfer implementations it is usually just one image each time.
+So the 1st dimension is always 1, even between the $F$ functions, throughout this work.
+
+The 2nd dimension is the ``feature'' dimension. For a raw RGB image, it is 3.
+Intermediate values between, for example, $F_3$ and $F_4$, usually 
+have a size much larger than 3, such as 64 or 128
+
+
+
+\subsection{Vanilla neural style transfer}
 
 \subsection{Implementation of Neural Network}
 Since we are not training the neural network, 
