@@ -103,8 +103,8 @@ The functions $F_1,F_2,F_3,...$ now have meaningful names such as relu\_1, conv\
 
 The arrays after the initial image are called feature maps, because their value means
 ``how much a feature x exists at position y and x''.
-For example in a $1\times64\times512\times512$ feature map, it means there are 64 types of features.
-and its [1, 17, 111, 222] element, would then refer to the extent that the 17th type feature exists
+Take a $1\times64\times512\times512$ feature map for example. There are 64 types of features.
+Its [1, 17, 111, 222] element, would then refer to the extent that the 17th type feature exists
 at the position of the 222th column of the 111th row. This ``extent'' could also be negative.
 
 \subsection{Vanilla neural style transfer}
@@ -146,8 +146,8 @@ The style loss $L_\text{content}$ can actually be a sum of several style losses,
 For each style loss, 
 both the current image under optimisation and the style image are passed through the vgg19 model.
 The two outputs of a certain function in the model are extracted, 
-and converted to Gram matrices. We will elabrate on what Gram matrices are,
-for now they are just square matrices computed from multidimensional arrays (i.e. feature maps).
+and converted to Gram matrices. We will elabrate on what Gram matrices are later.
+For now a Gram matrix is just a square matrix computed from a multidimensional array (i.e. a feature map).
 For example, the Gram matrix (in the style transfer algorithm) of a $1\times64\times512\times512$ array
 is a $64\times64$ matrix.
 The point is to compute something that describe the distributions of features
