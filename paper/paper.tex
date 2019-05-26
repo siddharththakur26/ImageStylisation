@@ -101,7 +101,7 @@ to half or even $\frac{1}{4}$ of the sizes of the image.
 The functions $F_1,F_2,F_3,...$ now have meaningful names such as relu\_1, conv\_2 now.
 [[[[Not actually necessary to know but insert your elaborations here]]]]
 
-The arrays after the initial image are called feature maps, because their value means
+The arrays after the initial image are called \emph{feature maps}, because their value means
 ``how much a feature x exists at position y and x''.
 Take a $1\times64\times512\times512$ feature map for example. There are 64 types of features.
 Its [1, 17, 111, 222] element, would then refer to the extent that the 17th type feature exists
@@ -184,14 +184,31 @@ could be used \cite{MMD}.
 For us, it seemed more natural to consider substitutes for the process itself of 
 transforming a feature map into a Gram matrix. 
 That is, we will consider other
-mappings that remove the spatial information of where features are but retains
+mappings that remove the spatial information or where features are in a feature map but retain
 the distribution of features, like a histogram.
+Such functions need to be differentiable as well, otherwise they would render the 
+optimisation infeasible.
+
 We will call such functions ``\emph{dislocators}'' in the remaing part of this work.
 Unfortunately, the word ``dislocate'' would give the connotation of moving something to somewhere else.
-However, the word ``locator'' means something that provides spatial information,
-so calling somthing that removes spatial information a ``dislocator'' is still plausible.
+Nevertheless, the word ``locator'' means something that provides spatial information,
+so calling somthing that removes spatial information a ``dislocator'' is still reasonable.
 
-Some ``dislocator'' functions we tried are
+Other ``dislocator'' functions whose output somehow describe the 
+distribution of features in their input should then work as substitutes
+for computing Gram matrices.
+The first few simplistic ``dislocator'' functions we tried are listed here.
+\begin{enumerate}
+\item Scaled sum of the responses all over the place for each feature.
+That is, for an $1\times64\times256\times256$ feature map,
+we compute an $1\times64$ array where each element is the sum of the
+$256\times256$ elements from the input.
+The whole array is then scaled to one over the total number of elements of the input feature map.
+\item Scaled sum of element-wise squares of the responses over the place for each feature.
+Other than an additional element-wise squaring, it is identical to the previous one.
+\item Scaled sum of absolute values of the responses over the place for each feature.
+\end{enumerate}
+
 
 
 \section{Experiments and Discussion}
