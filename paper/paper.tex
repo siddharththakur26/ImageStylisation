@@ -31,7 +31,7 @@ breaklines=true
 \cite{method}
 
 \keywords{Neural network, Deep learning, 
-Small data, Interpretability, Network pruning, Network reduction.}
+Small data, Interpretability .}
 \end{abstract}
 
 \section{Introduction}
@@ -64,12 +64,22 @@ The functions need to be differentiable, which is handled automatically by moder
 deep learning frameworks.
 Other than that we can treat the functions as blackboxes because we are 
 not concerned of training the model.
+A ``layer'' in a deep neural network refers to a few consecutive functions together.
+It is not particularly necessary to consider ``layers'' in this work. 
+Though it is important to note that in our illustrations there are functions instead of layers.
 
+\subsection{vgg19 model}
 For the vgg19 model that most neural style transfer implementations available are based on,
 The inputs and outpus of each layer are all arrays with 4 dimensions.
 The word ``dimension'' here may mean something slightly different from what ``dimension'' means in
 for example ``$3$-dimension vector''. 
 Some people call the number of dimensions ``rank'' which would then raise another confusion with the rank of matrices.
+We give an illustration for the vgg19 model in Figure \ref{vgg512}
+\begin{figure}
+\center
+\includegraphics[width=\textwidth]{vgg512.pdf}
+\caption{The VGG19 model with an $512\times512$ RGB image as its input \label{vgg512}}
+\end{figure}
 
 The 1st dimension is the ``batch'' dimension, which means that you can put several images through the
 series of functions.
@@ -77,10 +87,22 @@ In neural style transfer implementations it is usually just one image each time.
 So the 1st dimension is always 1, even between the $F$ functions, throughout this work.
 
 The 2nd dimension is the ``feature'' dimension. For a raw RGB image, it is 3.
-Intermediate values between, for example, $F_3$ and $F_4$, usually 
-have a size much larger than 3, such as 64 or 128
+Intermediate arrays between, for example, $F_3$ and $F_4$, usually 
+have a size much larger than 3, such as 64 or 128.
 
+The 3nd and 4th dimensions are just spatial locations. 
+For a $512\times512$ image they are 512 and 512. 
+For intermediate arrays, these 2 dimensions are sometimes scaled down
+to half or even $\frac{1}{4}$ of the sizes of the image.
 
+The functions $F_1,F_2,F_3,...$ now have meaningful names such as relu\_1, conv\_2 now.
+[Not actually necessary to know but insert your elaborations here]
+
+The arrays after the initial image are called feature maps, because their value means
+``how much a feature x exists at position y and x''.
+For example in a $1\times64\times512\times512$ feature map, it means there are 64 types of features.
+and its [1, 17, 111, 222] element, would then mean the extent that the 17th type feature exists
+at the 111 row and 222 column position of the image.
 
 \subsection{Vanilla neural style transfer}
 
