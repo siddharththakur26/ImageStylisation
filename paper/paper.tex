@@ -2,6 +2,9 @@
 \usepackage{graphicx}
 \usepackage[width=122mm,left=12mm,paperwidth=146mm,height=193mm,top=12mm,paperheight=217mm]{geometry}
 \usepackage{amsmath,amssymb} % define this before the line numbering.
+
+\DeclareMathOperator*{\argmin}{argmin}
+
 %\usepackage{ruler}
 \usepackage{color}
 
@@ -101,16 +104,32 @@ The functions $F_1,F_2,F_3,...$ now have meaningful names such as relu\_1, conv\
 The arrays after the initial image are called feature maps, because their value means
 ``how much a feature x exists at position y and x''.
 For example in a $1\times64\times512\times512$ feature map, it means there are 64 types of features.
-and its [1, 17, 111, 222] element, would then mean the extent that the 17th type feature exists
-at the 111 row and 222 column position of the image.
+and its [1, 17, 111, 222] element, would then refer to the extent that the 17th type feature exists
+at the position of the 222th column of the 111th row. This ``extent'' could also be negative.
 
 \subsection{Vanilla neural style transfer}
 
-%\subsection{Implementation of Neural Network}
-%Since we are not training the neural network, 
-%the model is just a sequence of functions on arrays.
+The vanillay neural style transfer algorithm \cite{nst} is 
+structured as iteratively solving an optimisation problem.
+The argument to optimise is the image as a multidimensional array,
+of size $1\times3\times512\times512$ for example.
+The interative solver can be many, but in our case it is 
+L-BFGS [Maybe elaborate on L-BFGS here]. 
+The initial value of the argument could be either white noise or the content image,
+but the latter appeared to make the optimisation much easier.
 
-\subsubsection{Testing Phase}
+The key issue here is still how to structure the optimisation target.
+The value to minimise is a linear combination of a ``style loss'' 
+and ``content loss''.
+Although these appeared to be two weights,
+actually only their ratio mattered.
+We simply fixed the weight of the content loss to 1 and
+leave the weight of the style loss as a adjustable hyperparameter $k$.
+\begin{align}
+\argmin\limits_{\text{image}} (kL_\text{style}+L_\text{content})
+\end{align}
+
+The content loss is the easier one of the two losses.
 
 \subsection{Data Set}
 
@@ -128,10 +147,6 @@ affected the result.
 \item Number of iterations in the optimization. 
 We did not have to expriment with different numbers of iterations though.
 It was more sensible to run the algorithm for more-than-enough iterations and store the intermediate results.
-\item Weights of style loss $k_S$ and content loss $k_C$ in the optimisation target. 
-Although these appeared to be two parameters,
-actually only their ratio $k_S/k_C$ mattered.
-We simply fixed $k_C=1$ and varied $k_S$.
 \item Choice of initial values. Some sensible choices were:
 \begin{itemize}
 \item White noise.

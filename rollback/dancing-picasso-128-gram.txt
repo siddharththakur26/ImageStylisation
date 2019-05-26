@@ -1,0 +1,4 @@
+run [50]:
+Style Loss : 84.038986 Content Loss: 18.380596
+run [100]:
+Style Loss : 21.720495 Content Loss: 16.501032

@@ -1,0 +1,40 @@
+run [50]:
+Style Loss : 3.613134 Content Loss: 3.041953
+run [100]:
+Style Loss : 0.427115 Content Loss: 2.362392
+run [150]:
+Style Loss : 0.214244 Content Loss: 2.095610
+run [200]:
+Style Loss : 0.175374 Content Loss: 1.999944
+run [250]:
+Style Loss : 0.166929 Content Loss: 1.955457
+run [300]:
+Style Loss : 0.163645 Content Loss: 1.931346
+run [350]:
+Style Loss : 0.160372 Content Loss: 1.918574
+run [400]:
+Style Loss : 0.158594 Content Loss: 1.909560
+run [450]:
+Style Loss : 0.157524 Content Loss: 1.902746
+run [500]:
+Style Loss : 0.157609 Content Loss: 1.899374
+run [550]:
+Style Loss : 0.156298 Content Loss: 1.893857
+run [600]:
+Style Loss : 0.156141 Content Loss: 1.889918
+run [650]:
+Style Loss : 0.156247 Content Loss: 1.886110
+run [700]:
+Style Loss : 88276738048.000000 Content Loss: 140700416.000000
+run [750]:
+Style Loss :  nan Content Loss:  nan
+run [800]:
+Style Loss :  nan Content Loss:  nan
+run [850]:
+Style Loss :  nan Content Loss:  nan
+run [900]:
+Style Loss :  nan Content Loss:  nan
+run [950]:
+Style Loss :  nan Content Loss:  nan
+run [1000]:
+Style Loss :  nan Content Loss:  nan

@@ -1,0 +1,2 @@
+run [50]:
+Style Loss : 2601112305664.000000 Content Loss: 11.069016

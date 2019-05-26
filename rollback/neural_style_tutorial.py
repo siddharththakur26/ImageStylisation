@@ -96,7 +96,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #	 with name ``images`` in your current working directory.
 
 # desired size of the output image
-imsize = 512 if torch.cuda.is_available() else 128  # use small size if no gpu
+#imsize = 512 if torch.cuda.is_available() else 128  # use small size if no gpu
+#imsize = 256
+#imsize = 128
+#imsize = 32
+#imsize = 128
+imsize = 512
 
 loader = transforms.Compose([
 	transforms.Resize(imsize),  # scale imported image
@@ -110,11 +115,7 @@ def image_loader(image_name):
 	return image.to(device, torch.float)
 
 
-style_img = image_loader("./picasso.jpg")
-content_img = image_loader("./dancing.jpg")
 
-assert style_img.size() == content_img.size(), \
-	"we need to import style and content images of the same size"
 
 
 ######################################################################
@@ -160,6 +161,7 @@ def gram_matrix(input):
 	# (c,d)=dimensions of a f. map (N=c*d)
 
 	features = input.view(a * b, c * d)  # resise F_XL into \hat F_XL
+	#print(features.shape)
 
 	G = torch.mm(features, features.t())  # compute the gram product
 
@@ -168,18 +170,131 @@ def gram_matrix(input):
 	return G.div(a * b * c * d)
 	#return G
 
+def gram_matrix_no_norm(input):
+	a, b, c, d = input.size()
+	features = input.view(a * b, c * d)
+	return torch.mm(features, features.t())
+
+
+#def gram_t(x):
+#	print(x.shape)
+#	return gram_matrix(x.transpose(2,3))
+
+def dislocate1(arr):
+	return arr.sum(dim=(2,3))/arr.shape.numel()
+
+def dislocate2(arr):
+	return (arr**2).sum(dim=(2,3))/arr.shape.numel()
+
+#def dislocate4(arr):
+#	return (arr**4).sum(dim=(2,3))/arr.shape.numel()
+
+def dislocate3(arr):
+	return arr.abs().sum(dim=(2,3))/arr.shape.numel()
+
+def dislocate4(arr):
+	a, b, c, d = arr.size()
+	features = arr.view(a*b,c*d)
+	return features[:,None,:] @ features[:,:,None] / (a*b*c*d)
+
+#def dislocate5(arr):
+#	return (arr**2).flatten(start_dim=2).sort(dim=2)[0]/arr.shape.numel()
+
+#def dislocate5(arr):
+#	flat = arr.flatten(start_dim=2)
+#	means = flat.mean(dim=2)
+#	medians = flat.median(dim=2)[0] #median() returns a tuple, 2nd for the index
+#	stds = flat.std(dim=2)
+#	r = torch.stack([means,medians,stds],dim=2)/(flat.shape[0]*flat.shape[1])
+#	return r
+
+def dislocate6(arr):
+	flat = arr.flatten(start_dim=2)
+	means = flat.mean(dim=2)
+	stds = flat.std(dim=2)
+	r = torch.stack([means,stds],dim=2)/(flat.shape[0]*flat.shape[1])
+	#print(arr.shape,r.shape)
+	return r
+
+#def dislocate7(arr):
+#	flat = arr.flatten(start_dim=2)
+#	means = flat.mean(dim=2)
+#	stds = flat.std(dim=2)
+#	m3r = ((flat - means[:,:,None])**3).mean(dim=2)**(1/3) #results in nan
+#	r = torch.stack([means,stds,m3r],dim=2)/(flat.shape[0]*flat.shape[1])
+	#print(arr.shape,r.shape)
+#	return r
+
+def dislocate7(arr):
+	flat = arr.flatten(start_dim=2)
+	means = flat.mean(dim=2)
+	stds = flat.std(dim=2)
+	m4r = ((flat - means[:,:,None])**4).mean(dim=2)**(1/4)
+	r = torch.stack([means,stds,m4r],dim=2)/(flat.shape[0]*flat.shape[1])
+	#print(arr.shape,r.shape)
+	return r
+
+def dislocate8(arr):
+	flat = arr.flatten(start_dim=2)
+	means = flat.mean(dim=2)
+	stds = flat.std(dim=2)
+	m4r = ((flat - means[:,:,None])**4).mean(dim=2)**(1/4)
+	m6r = ((flat - means[:,:,None])**6).mean(dim=2)**(1/6)
+	r = torch.stack([means,stds,m4r,m6r],dim=2)/(flat.shape[0]*flat.shape[1])
+	#print(arr.shape,r.shape)
+	return r
+
+usableDislocators = [
+	('gram',gram_matrix),
+	('gram-n',gram_matrix_no_norm),
+	('sum',dislocate1),
+	('sumsq',dislocate2),
+	('sumabs',dislocate3),
+	('sumsqM',dislocate4),
+	('stat2',dislocate6),
+	('stat3',dislocate7),
+	('stat4',dislocate8)]
+
+
 class StyleLoss(nn.Module):
 
-	def __init__(self, target):
+	def __init__(self, target, f):
 		super(StyleLoss, self).__init__()
 		#self.target = gram_matrix(target_feature).detach()
 		self.target = target.detach()
+		self.f = f
 
 	def forward(self, input):
 		#self.loss = F.mse_loss(gram_matrix(input), self.target)
+		#self.loss = F.mse_loss(gram_matrix(input), gram_matrix(self.target))
+
 		#self.loss = F.mse_loss(input**2, self.target**2)
-		self.loss = F.mse_loss(gram_matrix(input), gram_matrix(self.target))
+		#self.loss = F.mse_loss(dislocate3(input), dislocate3(self.target))
+		#self.loss = F.mse_loss(dislocate4(input), dislocate4(self.target))
+		#self.loss = F.mse_loss(dislocate5(input), dislocate5(self.target))
+		#self.loss = F.mse_loss(dislocate6(input), dislocate6(self.target))
+		#self.loss = F.mse_loss(dislocate7(input), dislocate7(self.target))
+		#self.loss = F.mse_loss(dislocate8(input), dislocate8(self.target))
 		#print('StyleLoss input size', input.size())
+
+		'''
+		N = input.shape[2]*input.shape[3]
+		mipSz = 16
+		S = 1/input.shape.numel()*mipSz*mipSz
+		mipL = (input.reshape(input.shape[0],input.shape[1],
+			input.shape[2]//mipSz,mipSz,
+			input.shape[3]//mipSz,mipSz)**2).sum([3,5])
+		mipR = (self.target.reshape(input.shape[0],input.shape[1],
+			input.shape[2]//mipSz,mipSz,
+			input.shape[3]//mipSz,mipSz)**2).sum([3,5])
+		#print('StyleLoss mip sizes', mipL.size(), mipR.size(), N//mipSz//mipSz)
+		self.loss = F.mse_loss(S*mipL.flatten(start_dim=2)[:,:,:,None].expand(-1,-1,-1,N//mipSz//mipSz),
+			S*mipR.flatten(start_dim=2)[:,:,None,:].expand(-1,-1,N//mipSz//mipSz,-1))
+		'''
+		#self.loss = F.mse_loss(gram_t(input),gram_t(self.target))
+
+		self.loss = F.mse_loss(self.f(input),self.f(self.target))
+
 		return input
 
 
@@ -233,6 +348,13 @@ class Normalization(nn.Module):
 		#print(img.size())
 		return (img - self.mean) / self.std
 
+class PrintSize(nn.Module):
+	def __init__(self, label=""):
+		super(PrintSize, self).__init__()
+		self.label = label
+	def forward(self, arr):
+		print(self.label,arr.size())
+		return arr
 
 ######################################################################
 # A ``Sequential`` module contains an ordered list of child modules. For
@@ -244,15 +366,14 @@ class Normalization(nn.Module):
 # 
 
 # desired depth layers to compute style/content losses :
-#content_layers_default = ['conv_4']
-#style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 content_layers_default = ['conv_4']
-style_layers_default = ['conv_4']
+style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
+#content_layers_default = ['conv_4']
+#style_layers_default = ['conv_5']
 
-def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
+def get_style_model_and_losses(dislocator, cnn, normalization_mean, normalization_std,
 							   style_img, content_img,
-							   content_layers=content_layers_default,
-							   style_layers=style_layers_default):
+							   content_layers, style_layers):
 	cnn = copy.deepcopy(cnn)
 	print('original model',cnn)
 
@@ -271,6 +392,7 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
 	model.add_module('normalization',normalization)
 
 	i = 0  # increment every time we see a conv
+	counter = len(content_layers) + len(style_layers) # assume no duplicate names!
 	for layer in cnn.children():
 		if isinstance(layer, nn.Conv2d):
 			i += 1
@@ -288,6 +410,7 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
 		else:
 			raise RuntimeError('Unrecognized layer: {}'.format(layer.__class__.__name__))
 
+		model.add_module('printSize before '+name, PrintSize('before '+name))
 		model.add_module(name, layer)
 
 		if name in content_layers:
@@ -295,21 +418,26 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
 			content_loss = ContentLoss(model(content_img).detach())
 			model.add_module("content_loss_{}".format(i), content_loss)
 			content_losses.append(content_loss)
+			counter -= 1
 
 		if name in style_layers:
 			# add style loss:
-			style_loss = StyleLoss(model(style_img).detach())
+			style_loss = StyleLoss(model(style_img).detach(),dislocator)
 			model.add_module("style_loss_{}".format(i), style_loss)
 			style_losses.append(style_loss)
+			counter -= 1
+
+		if(counter <= 0):
+			break
 
 	#print(model)
 
 	# now we trim off the layers after the last content and style losses
-	for i in range(len(model) - 1, -1, -1):
-		if isinstance(model[i], ContentLoss) or isinstance(model[i], StyleLoss):
-			break
+	#for i in range(len(model) - 1, -1, -1):
+	#	if isinstance(model[i], ContentLoss) or isinstance(model[i], StyleLoss):
+	#		break
 
-	model = model[:(i + 1)]
+	#model = model[:(i + 1)]
 	print('trimmed model with loss output',model)
 
 	return model, style_losses, content_losses
@@ -320,7 +448,6 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std,
 # or white noise.
 # 
 
-input_img = content_img.clone()
 # if you want to use white noise instead uncomment the below line:
 #input_img = torch.randn(content_img.data.size(), device=device)
 
@@ -329,53 +456,55 @@ input_img = content_img.clone()
 #imshow(input_img, title='Input Image')
 
 
-def run_style_transfer(cnn, normalization_mean, normalization_std,
-					   content_img, style_img, input_img, num_steps=300,
+def run_style_transfer(prefix, dislocator, content_layers, style_layers, 
+						cnn, normalization_mean, normalization_std,
+					   content_img, style_img, input_img, num_steps=1000,
 					   style_weight=1000000, content_weight=1):
 	"""Run the style transfer."""
 	print('Building the style transfer model..')
-	model, style_losses, content_losses = get_style_model_and_losses(cnn,
-		normalization_mean, normalization_std, style_img, content_img)
+	model, style_losses, content_losses = get_style_model_and_losses(dislocator, cnn,
+		normalization_mean, normalization_std, style_img, content_img,
+		content_layers, style_layers
+		)
 	optimizer =  optim.LBFGS([input_img.requires_grad_()])
 
 	print('Optimizing..')
 	run = [0]
-	while run[0] <= num_steps:
-
-		def closure():
-			# correct the values of updated input image
-			input_img.data.clamp_(0, 1)
-
-			optimizer.zero_grad()
-			model(input_img)
-			style_score = 0
-			content_score = 0
-
-			#print(style_losses, content_losses)
-			for sl in style_losses:
-				style_score += sl.loss
-			for cl in content_losses:
-				content_score += cl.loss
-
-			style_score *= style_weight
-			content_score *= content_weight
-
-			loss = style_score + content_score
-			loss.backward()
-
-			run[0] += 1
-			if run[0] % 50 == 0:
-				print("run {}:".format(run))
-				print('Style Loss : {:4f} Content Loss: {:4f}'.format(
-					style_score.item(), content_score.item()))
-				print()
-
-			return style_score + content_score
-
-		optimizer.step(closure)
-
-	# a last correction...
 	input_img.data.clamp_(0, 1)
+	with open(prefix+'.txt','w') as log_file:
+		while run[0] < num_steps:
+
+			def closure():
+				# correct the values of updated input image
+				optimizer.zero_grad()
+				model(input_img)
+				style_score = 0
+				content_score = 0
+
+				#print(style_losses, content_losses)
+				for sl in style_losses:
+					style_score += sl.loss
+				for cl in content_losses:
+					content_score += cl.loss
+
+				style_score *= style_weight
+				content_score *= content_weight
+
+				loss = style_score + content_score
+				loss.backward()
+
+				input_img.data.clamp_(0, 1)
+
+				run[0] += 1
+				if run[0] % 50 == 0:
+					print("run {}:".format(run),file=log_file)
+					print('Style Loss : {:4f} Content Loss: {:4f}'
+						.format(style_score.item(), content_score.item()),file=log_file)
+					plt.imsave(prefix+'-'+("%04d"%run[0])+'.png',unloader(input_img.cpu().clone().squeeze(0)))
+
+				return style_score + content_score
+
+			optimizer.step(closure)
 
 	return input_img
 
@@ -384,11 +513,47 @@ def run_style_transfer(cnn, normalization_mean, normalization_std,
 # Finally, we can run the algorithm.
 # 
 
-output = run_style_transfer(cnn, cnn_normalization_mean, cnn_normalization_std,
-							content_img, style_img, input_img)
+
+if False:
+	cl = content_layers_default
+	sl = style_layers_default
+	#layer_string = ','.join(cl) + '-' + ','.join(sl)
+	for content_name in ['dancing']:
+		for style_name in ['picasso']:
+			for (fname,f) in usableDislocators:
+				content_img = image_loader("./"+content_name+".jpg")
+				style_img = image_loader("./"+style_name+".jpg")
+				assert style_img.size() == content_img.size(), \
+					"we need to import style and content images of the same size"
+				input_img = content_img.clone()
+				output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
+											f, 
+											cl, sl,
+											cnn, cnn_normalization_mean, cnn_normalization_std,
+											content_img, style_img, input_img)
+
+(fname,f) = usableDislocators[0]
+for content_name in ['dancing']:
+	for style_name in ['picasso']:
+		for (cl,sl) in [(['conv_4'],['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']),
+			(['conv_4','conv_5']),
+			(['conv_4','conv_4']),
+			(['conv_1','conv_1']),
+			(['relu_1','relu_1']),
+			(['conv_2','conv_2'])]:
+			content_img = image_loader("./"+content_name+".jpg")
+			style_img = image_loader("./"+style_name+".jpg")
+			assert style_img.size() == content_img.size(), \
+				"we need to import style and content images of the same size"
+			input_img = content_img.clone()
+			output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname
+										+','.join(cl)+'-'+','.join(sl), 
+										f, 
+										cl, sl,
+										cnn, cnn_normalization_mean, cnn_normalization_std,
+										content_img, style_img, input_img)
 
 
-plt.imsave('OOO.png',unloader(output.cpu().clone().squeeze(0)))
 
 #plt.figure()
 #imshow(output, title='Output Image')
