@@ -177,12 +177,21 @@ It gives really nice insight on what ``artistic style'' means.
 Now we wonder, could we achieve similar results with other ways to compare 
 distribution of features?
 One approach would be to consider the \emph{comparison} as a whole to find 
-substitute. 
-For us, it seemed more natural to consider substitute to the process of 
-transforming feature maps to Gram matrices itself, that is, 
-a mapping that removes the spatial information of where features are but retains
-the distribution of features like a histogram.
+substitutes. 
+For example, minimising the mean square errors between two Gram matrices could be seen as 
+a special case for minimising a Maximum Mean Discrepancy, which means other Maximum Mean Discrepacies
+could be used \cite{MMD}.
+For us, it seemed more natural to consider substitutes for the process itself of 
+transforming a feature map into a Gram matrix. 
+That is, we will consider other
+mappings that remove the spatial information of where features are but retains
+the distribution of features, like a histogram.
+We will call such functions ``\emph{dislocators}'' in the remaing part of this work.
+Unfortunately, the word ``dislocate'' would give the connotation of moving something to somewhere else.
+However, the word ``locator'' means something that provides spatial information,
+so calling somthing that removes spatial information a ``dislocator'' is still plausible.
 
+Some ``dislocator'' functions we tried are
 
 
 \section{Experiments and Discussion}
@@ -199,7 +208,7 @@ losses from are not very essential and somewhat belongs to tuning.
 \begin{thebibliography}{8}
 \bibitem{nst}
 Gatys, L., Ecker, A., \& Bethge, M. (2016). A neural algorithm of artistic style. Journal of Vision, 16(12), 326. doi:10.1167/16.12.326
-\bibitem{demyst}
+\bibitem{MMD}
 Li, Y., Wang, N., Liu, J., \& Hou, X. (2017). Demystifying Neural Style Transfer. IJCAI.
 \bibitem{interp}
 Doshi-Velez, F., \& Kim, B. (2017). Towards A Rigorous Science of Interpretable Machine Learning.
