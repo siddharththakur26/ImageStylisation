@@ -99,7 +99,7 @@ For intermediate arrays, these 2 dimensions are sometimes scaled down
 to half or even $\frac{1}{4}$ of the sizes of the image.
 
 The functions $F_1,F_2,F_3,...$ now have meaningful names such as relu\_1, conv\_2 now.
-[Not actually necessary to know but insert your elaborations here]
+[[[[Not actually necessary to know but insert your elaborations here]]]]
 
 The arrays after the initial image are called feature maps, because their value means
 ``how much a feature x exists at position y and x''.
@@ -114,7 +114,7 @@ structured as iteratively solving an optimisation problem.
 The argument to optimise is the image as a multidimensional array,
 of size $1\times3\times512\times512$ for example.
 The interative solver can be many, but in our case it is 
-L-BFGS [Maybe elaborate on L-BFGS here]. 
+L-BFGS [[[[Maybe elaborate on L-BFGS here]]]]. 
 The initial value of the argument could be either white noise or the content image,
 but the latter appeared to make the optimisation much easier.
 
@@ -129,7 +129,7 @@ leave the weight of the style loss as a adjustable hyperparameter $k$.
 \argmin\limits_{\text{image}} (kL_\text{style}+L_\text{content})
 \end{align}
 
-The content loss is the easier one to explain of the two losses.
+The content loss $L_\text{content}$ is the easier one to explain of the two losses.
 It is the mean square error between the outputs of a certain function in the
 vgg19 taking the current argument image and the content image as inputs respectively.
 We say ``a certain'' function because the output of which function to choose is
@@ -138,74 +138,45 @@ A typical choice is the output of \verb|conv_4| function. See Figure \ref{conten
 \begin{figure}
 \center
 \includegraphics[width=\textwidth]{contentloss.pdf}
-\caption{The content loss \label{contentloss}}
+\caption{The content loss $L_{content}$ \label{contentloss}}
 \end{figure}
 
-\subsection{Data Set}
 
-\subsubsection {Format and Preparation}
+The style loss $L_\text{content}$ can actually be a sum of several style losses, or sometimes just one.
+For each style loss, 
+both the current image under optimisation and the style image are passed through the vgg19 model.
+The two outputs of a certain function in the model are extracted, 
+and converted to Gram matrices. We will elabrate on what Gram matrices are,
+for now they are just square matrices computed from multidimensional arrays (i.e. feature maps).
+For example, the Gram matrix (in the style transfer algorithm) of a $1\times64\times512\times512$ array
+is a $64\times64$ matrix.
+The point is to compute something that describe the distributions of features
+in the image without the spatial information of where the features are.
+Gram matrices describe the distributions with correlation between features.
+The several style losses are computed with the outputs of different functions.
+Otherwise, each of the several style losses are computed in exactly the same way.
 
-\subsubsection {(Not Really) Time-Series}
+Again outputs of which functions in the model to derive style losses from is really adjustable.
+A nice default is \verb|conv_1|,\verb|conv_2|,...,\verb|conv_5|. We illustrate
+the style losses derived \verb|conv_1| and \verb|conv_4| in Figure $\ref{stylelosses}$.
 
-\subsubsection {Rationale}
+\begin{figure}
+\center
+\includegraphics[width=\textwidth]{stylelosses}
+\end{figure}
 
-\subsection{Hyperparameters and Experiments}
+\subsection{Gram matrix}
+[[[[Elaborate on gram matrix here]]]]
 
-For the vanilla style-transfer algorithm, there were a few hyper-parameters that 
-affected the result.
-\begin{itemize}
-\item Number of iterations in the optimization. 
-We did not have to expriment with different numbers of iterations though.
-It was more sensible to run the algorithm for more-than-enough iterations and store the intermediate results.
-\item Choice of initial values. Some sensible choices were:
-\begin{itemize}
-\item White noise.
-\item White.
-\item Black.
-\item The model mean.
-\item The content image.
-\item The style image.
-\item The average of the content image and the style image.
-\end{itemize}
-\end{itemize}
+\subsection{Removing the spatial information in other ways}
+We think that the most brilliant aspect of the neural style transfer algorithm,
+apart from the general structure, is the use of Gram matrices to compare 
+distributions of features in two images, so that where the features are does not matter.
+It gives really nice insight on what ``artistic style'' means.
 
-%\subsubsection{Activation Function}
+However, could we achieve the same results with other 
 
-\subsubsection{Learning Rate}
-
-\subsubsection{Hidden Layer Size}
-
-\subsection{Evaluating Prediction}
-
-\subsubsection{Binarisation and Choice of Loss}
-
-\subsubsection{Amount of Network Reduction}
-
-\subsubsection{Mechanism} 
-
-\subsubsection{Execution}
-
-The program was developed under and are compatible with:
-\begin{itemize}
-\item Python 3.6
-\item PyTorch 1.0.1.post2
-\item CentOS 7 x86\_64
-\end{itemize}
-To run the code, execute shell commands like
-\begin{verbatim}
-python36 0.py 5000
-\end{verbatim}
-where 5000 is the number of desired training cycles to reach.
-The different hyperparameters will be automatically covered.
-The program automatically picks up stored models.
-To start fresh, clear the stored models and outputs by
-\begin{verbatim}
-rm out/*/*.*
-\end{verbatim}
-but do not remove the directories.
-
-
-\section{Results and Discussion}
+\section{Experiments and Discussion}
 
 \section{Conclusion and Future Work}
 

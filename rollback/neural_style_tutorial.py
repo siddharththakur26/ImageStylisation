@@ -107,7 +107,6 @@ loader = transforms.Compose([
 	transforms.Resize(imsize),  # scale imported image
 	transforms.ToTensor()])  # transform it into a torch tensor
 
-
 def image_loader(image_name):
 	image = Image.open(image_name)
 	# fake batch dimension required to fit network's input dimensions
@@ -517,43 +516,55 @@ def run_style_transfer(prefix, dislocator, content_layers, style_layers,
 if False:
 	cl = content_layers_default
 	sl = style_layers_default
-	#layer_string = ','.join(cl) + '-' + ','.join(sl)
 	for content_name in ['dancing']:
 		for style_name in ['picasso']:
 			for (fname,f) in usableDislocators:
 				content_img = image_loader("./"+content_name+".jpg")
 				style_img = image_loader("./"+style_name+".jpg")
-				assert style_img.size() == content_img.size(), \
-					"we need to import style and content images of the same size"
+				assert style_img.size() == content_img.size()
 				input_img = content_img.clone()
 				output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
 											f, 
 											cl, sl,
 											cnn, cnn_normalization_mean, cnn_normalization_std,
 											content_img, style_img, input_img)
+if False:
+	(fname,f) = usableDislocators[0]
+	for content_name in ['dancing']:
+		for style_name in ['picasso']:
+			for (cl,sl) in [
+				(['conv_4'],['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']),
+				(['conv_4'],['conv_5']),
+				(['conv_4'],['conv_4']),
+				(['conv_1'],['conv_1']),
+				(['relu_1'],['relu_1']),
+				(['conv_2'],['conv_2'])]:
+				content_img = image_loader("./"+content_name+".jpg")
+				style_img = image_loader("./"+style_name+".jpg")
+				assert style_img.size() == content_img.size()
+				input_img = content_img.clone()
+				output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname
+											+'-'+','.join(cl)+'-'+','.join(sl), 
+											f, 
+											cl, sl,
+											cnn, cnn_normalization_mean, cnn_normalization_std,
+											content_img, style_img, input_img)
 
+cl = content_layers_default
+sl = style_layers_default
 (fname,f) = usableDislocators[0]
-for content_name in ['dancing']:
-	for style_name in ['picasso']:
-		for (cl,sl) in [
-			(['conv_4'],['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']),
-			(['conv_4'],['conv_5']),
-			(['conv_4'],['conv_4']),
-			(['conv_1'],['conv_1']),
-			(['relu_1'],['relu_1']),
-			(['conv_2'],['conv_2'])]:
-			content_img = image_loader("./"+content_name+".jpg")
-			style_img = image_loader("./"+style_name+".jpg")
-			assert style_img.size() == content_img.size(), \
-				"we need to import style and content images of the same size"
-			input_img = content_img.clone()
-			output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname
-										+'-'+','.join(cl)+'-'+','.join(sl), 
-										f, 
-										cl, sl,
-										cnn, cnn_normalization_mean, cnn_normalization_std,
-										content_img, style_img, input_img)
-
+for content_name,style_name in [('riverside','starrynight')]:
+		content_img = image_loader("./"+content_name+".jpg")
+		style_img = image_loader("./"+style_name+".jpg")
+		print(style_img.size(), content_img.size())
+		assert style_img.size() == content_img.size()
+		input_img = content_img.clone()
+		output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
+									f, 
+									cl, sl,
+									cnn, cnn_normalization_mean, cnn_normalization_std,
+											content_img, style_img, input_img)
+	
 
 
 #plt.figure()
