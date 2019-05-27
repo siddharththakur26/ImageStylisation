@@ -41,10 +41,9 @@ pip3 install https://download.pytorch.org/whl/cu90/torchvision-0.3.0-cp37-cp37m-
 Sometimes PyTorch may fail at runtime because of outdated numpy package. 
 In this case, run:
 pip3 install numpy --upgrade 
-#[[[[ Insert instructions for windows here, Jianzhen ]]]]
 
-When running the program, the vgg19 will be automatically downloaded if not 
-already present.
+When running the program, the pretrained vgg19 model will be automatically downloaded 
+if not already present.
 
 ==== Images ====
 
