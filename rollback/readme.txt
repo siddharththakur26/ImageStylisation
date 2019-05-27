@@ -24,14 +24,27 @@ except that torchvision from PyTorch may have bad compatibilities between versio
 As long as it runs without failure, the program should 
 work correctly.
 
-To install PyTorch 1.0.1.post2, run:
+To install PyTorch 1.0.1.post2 under Linux, run:
 pip3.6 install --user https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
 pip3.6 install --user torchvision
+
+To install latest stable PyTorch under MacOS, run:
+pip3 install torch torchvision
+Unfortunately, PyTorch are not well-supported on MacOS. 
+GPU is not supported and the installation may even break.
+Try "import torch" on the REPL and ensure that PyTorch works correctly before 
+proceeding.
+
+To install PyTorch under Windows:
+pip3 install https://download.pytorch.org/whl/cu90/torch-1.0.1.post2-cp37-cp37m-win_amd64.whl
+pip3 install https://download.pytorch.org/whl/cu90/torchvision-0.2.2.post3-cp37-cp37m-win_amd64.whl
 
 ==== Images ====
 
 The program only takes square (same width and height) JPEG
 images whose file name ends with ".jpg".
+The images do not have to be of the same size as long as they are all sqaure.
+They will be automatically scaled.
 The image files must be directly under the current working directory,
 which is usually the same place as the neural-style.py file.
 It has been designed this way so that it can generate 
