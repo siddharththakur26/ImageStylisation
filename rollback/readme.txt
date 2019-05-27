@@ -44,6 +44,7 @@ pip3 install numpy --upgrade
 
 When running the program, the pretrained vgg19 model will be automatically downloaded 
 if not already present.
+GPU support is disabled.
 
 ==== Images ====
 
