@@ -7,6 +7,8 @@ Neural Transfer Using PyTorch
  
 **Edited by**: `Winston Herring <https://github.com/winston6>`_
 
+**Edited by**: `Xi Du`
+
 Introduction
 ------------
 
@@ -71,7 +73,9 @@ import sys
 # Next, we set the ``torch.device`` for use throughout the tutorial. Also the ``.to(device)``
 # method is used to move tensors or modules to a desired device. 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device_str = "cuda" if torch.cuda.is_available() else "cpu"
+print('device is', device_str)
+device = torch.device(device_str)
 
 ######################################################################
 # Loading the Images
