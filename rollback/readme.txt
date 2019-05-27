@@ -35,9 +35,12 @@ GPU is not supported and the installation may even break.
 Try "import torch" on the REPL and ensure that PyTorch works correctly before 
 proceeding.
 
-#To install PyTorch under Windows:
-#pip3 install https://download.pytorch.org/whl/cu90/torch-1.1.0-cp37-cp37m-win_amd64.whl
-#pip3 install https://download.pytorch.org/whl/cu90/torchvision-0.3.0-cp37-cp37m-win_amd64.whl
+To install PyTorch under Windows:
+pip3 install https://download.pytorch.org/whl/cu90/torch-1.1.0-cp37-cp37m-win_amd64.whl
+pip3 install https://download.pytorch.org/whl/cu90/torchvision-0.3.0-cp37-cp37m-win_amd64.whl
+Sometimes PyTorch may fail at runtime because of outdated numpy package. 
+In this case, run:
+pip3 install numpy --upgrade 
 #[[[[ Insert instructions for windows here, Jianzhen ]]]]
 
 ==== Images ====
