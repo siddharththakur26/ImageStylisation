@@ -66,12 +66,7 @@ import copy
 import sys
 
 ######################################################################
-# Next, we need to choose which device to run the network on and import the
-# content and style images. Running the neural transfer algorithm on large
-# images takes longer and will go much faster when running on a GPU. We can
-# use ``torch.cuda.is_available()`` to detect if there is a GPU available.
-# Next, we set the ``torch.device`` for use throughout the tutorial. Also the ``.to(device)``
-# method is used to move tensors or modules to a desired device. 
+#GPU support is disabled because of lack of environments.
 
 device_str = "cpu"
 print('device is', device_str)
