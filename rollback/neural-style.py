@@ -582,6 +582,8 @@ if sys.argv[1] == "--one":
 	content_name = sys.argv[2]
 	style_name = sys.argv[3]
 	one_experiment()
+else:
+    print("See readme.txt for instructions")
 
 #plt.figure()
 #imshow(output, title='Output Image')
