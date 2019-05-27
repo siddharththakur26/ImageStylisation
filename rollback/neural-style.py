@@ -61,7 +61,7 @@ import torchvision.transforms as transforms
 import torchvision.models as models
 
 import copy
-
+import sys
 
 ######################################################################
 # Next, we need to choose which device to run the network on and import the
@@ -102,6 +102,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #imsize = 32
 #imsize = 128
 imsize = 512
+
+if sys.argv[1] == "--one" and len(sys.argv) >= 5:
+	imsize = int(sys.argv[4])
 
 loader = transforms.Compose([
 	transforms.Resize(imsize),  # scale imported image
@@ -566,25 +569,19 @@ def one_experiment(): #relies on dynamic scoping!
 									cnn, cnn_normalization_mean, cnn_normalization_std,
 											content_img, style_img, input_img)
 
-
-for content_name in ['dancing','riverside']:
-	for style_name in ['picasso','starrynight']:
-		one_experiment()
+if False:
+	for content_name in ['dancing','riverside']:
+		for style_name in ['picasso','starrynight']:
+			one_experiment()
 	
 if False:
 	for content_name,style_name in [('riverside','starrynight')]:
-			content_img = image_loader("./"+content_name+".jpg")
-			style_img = image_loader("./"+style_name+".jpg")
-			print(style_img.size(), content_img.size())
-			assert style_img.size() == content_img.size()
-			input_img = content_img.clone()
-			output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
-										f, 
-										cl, sl,
-										cnn, cnn_normalization_mean, cnn_normalization_std,
-												content_img, style_img, input_img)
+		one_experiment()
 	
-
+if sys.argv[1] == "--one":
+	content_name = sys.argv[2]
+	style_name = sys.argv[3]
+	one_experiment()
 
 #plt.figure()
 #imshow(output, title='Output Image')
