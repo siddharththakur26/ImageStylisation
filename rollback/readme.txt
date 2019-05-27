@@ -36,8 +36,8 @@ Try "import torch" on the REPL and ensure that PyTorch works correctly before
 proceeding.
 
 To install PyTorch under Windows:
-pip3 install https://download.pytorch.org/whl/cu90/torch-1.0.1.post2-cp37-cp37m-win_amd64.whl
-pip3 install https://download.pytorch.org/whl/cu90/torchvision-0.2.2.post3-cp37-cp37m-win_amd64.whl
+pip3 install https://download.pytorch.org/whl/cu90/torch-1.0.1-cp37-cp37m-win_amd64.whl
+https://download.pytorch.org/whl/cu90/torchvision-0.3.0-cp37-cp37m-win_amd64.whl
 
 ==== Images ====
 
