@@ -553,17 +553,36 @@ if False:
 cl = content_layers_default
 sl = style_layers_default
 (fname,f) = usableDislocators[0]
-for content_name,style_name in [('riverside','starrynight')]:
-		content_img = image_loader("./"+content_name+".jpg")
-		style_img = image_loader("./"+style_name+".jpg")
-		print(style_img.size(), content_img.size())
-		assert style_img.size() == content_img.size()
-		input_img = content_img.clone()
-		output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
+
+def one_experiment(): #relies on dynamic scoping!
+	content_img = image_loader("./"+content_name+".jpg")
+	style_img = image_loader("./"+style_name+".jpg")
+	print(style_img.size(), content_img.size())
+	assert style_img.size() == content_img.size()
+	input_img = content_img.clone()
+	output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
 									f, 
 									cl, sl,
 									cnn, cnn_normalization_mean, cnn_normalization_std,
 											content_img, style_img, input_img)
+
+
+for content_name in ['dancing','riverside']:
+	for style_name in ['picasso','starrynight']:
+		one_experiment()
+	
+if False:
+	for content_name,style_name in [('riverside','starrynight')]:
+			content_img = image_loader("./"+content_name+".jpg")
+			style_img = image_loader("./"+style_name+".jpg")
+			print(style_img.size(), content_img.size())
+			assert style_img.size() == content_img.size()
+			input_img = content_img.clone()
+			output = run_style_transfer(content_name+'-'+ style_name+'-'+str(imsize)+'-'+fname, 
+										f, 
+										cl, sl,
+										cnn, cnn_normalization_mean, cnn_normalization_std,
+												content_img, style_img, input_img)
 	
 
 
