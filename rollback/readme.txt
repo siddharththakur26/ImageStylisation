@@ -43,6 +43,9 @@ In this case, run:
 pip3 install numpy --upgrade 
 #[[[[ Insert instructions for windows here, Jianzhen ]]]]
 
+When running the program, the vgg19 will be automatically downloaded if not 
+already present.
+
 ==== Images ====
 
 The program only takes square (same width and height) JPEG
