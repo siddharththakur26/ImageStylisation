@@ -179,8 +179,11 @@ distribution of features?
 One approach would be to consider the \emph{comparison} as a whole to find 
 substitutes. 
 For example, minimising the mean square errors between two Gram matrices could be seen as 
-a special case for minimising a Maximum Mean Discrepancy, which means other Maximum Mean Discrepacies
+a special case for minimising a Maximum Mean Discrepancy (MMD), which means other Maximum Mean Discrepacies
 could be used \cite{MMD}.
+
+[[[[Maybe Describe MMD here]]]]
+
 For us, it seemed more natural to consider substitutes for the process itself of 
 transforming a feature map into a Gram matrix. 
 That is, we will consider other
@@ -209,6 +212,8 @@ Other than an additional element-wise squaring, it is identical to the previous 
 \item Scaled sum of absolute values of the responses over the place for each feature.
 \end{enumerate}
 
+To find more dislocators, let us consider \emph{how to describe a distribution} in general?
+The obvious answer is then statistics, like mean, standard deviation, 
 
 
 \section{Experiments and Discussion}
