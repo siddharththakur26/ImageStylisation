@@ -215,23 +215,47 @@ Other than an additional element-wise squaring, it is identical to the previous 
 To find more dislocators, let us consider \emph{how to describe a distribution} in general?
 The obvious answer is then sample statistics or estimators, like (sample) mean, (sample) standard deviation, 
 (sample) skewness, (sample) kurtosis and any moments.
-Unfortunately, we found that higher moments are too slow to compute for experiments,
+Unfortunately, we found that higher moments too slow to compute for our experiments,
 so we ended up with the following (combinations) of sample statistics.
-%\begin{enumerate}
-%\end{enumerate}
+\begin{enumerate}
+\item Mean and standard deviation of each type of feature. 
+That is, given a $1\times64\times256\times256$ feature map, 
+we compute an $1\times64\times2$ array.
+Standard deviation is favored over variance because standard deviations 
+are supposedly of the same unit of measure as the mean, 
+while variances are of a squared unit of measure.
+\item Mean, standard deviation and 4th central moment to the power of $1/4$. 
+That is, a $1\times64\times3$ array for a $1\times64\times256\times256$ feature map.
+\item Mean, standard deviation, 4th central moment to the power of $1/4$, 
+and 6th central moment to the power of $1/6$.
+\end{enumerate}
+We have found by experiment that odd-order moments did not work.
+6th central moments were already much slower to compute in practice 
+than Gram matrices.
+So we could only stop at the 6th moment due to limited experimental capacity.
 
-
+Unfortunately, straight forward histograms were not computationally feasible.
+Although the autograd facility could handle histograms in theory, we were not
+able to make histograms work in practice. Similarly, sorting or order statistics
+like medians were found to be computationally infeasible in practice.
 
 \section{Experiments and Discussion}
 
 \subsection{Reproducing the original result}
-
-\subsection{Varying the dislocator function}
+[[[[Fill the experiment part in demo here to show that we have reproduced result.
+Cite the original tutorial]]]] \cite{tut}
 
 \subsection{Varying the extraction points for losses}
 
-We will also show that other factors, such that the outputs of which functions to derive the style 
-losses from are not very essential and somewhat belongs to tuning.
+We will now show that within the general optimisation framework,
+steps other than the Gram matrix, 
+such as the outputs of which feature maps to derive the style 
+losses from are not very essential.
+
+\subsection{Varying the dislocator function}
+
+Now let us see something more interesting.
+
 
 \section{Conclusion and Future Work}
 
@@ -244,6 +268,8 @@ Li, Y., Wang, N., Liu, J., \& Hou, X. (2017). Demystifying Neural Style Transfer
 Doshi-Velez, F., \& Kim, B. (2017). Towards A Rigorous Science of Interpretable Machine Learning.
 \bibitem{pytorch}
 Paszke, A., Gross, S., Chintala, S., Chanan, G., Yang, E., DeVito, Z., Lin, Z., Desmaison, A., Antiga, L., \& Lerer, A. (2017). Automatic differentiation in PyTorch.
+\bibitem{tut}
+Jacq, A. (n.d.). Neural Transfer Using PyTorch (W. Herring, Ed.). Retrieved from https://pytorch.org/tutorials/advanced/neural\_style\_tutorial.html
 \end{thebibliography}
 \end{document}
 

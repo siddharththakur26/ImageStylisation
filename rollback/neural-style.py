@@ -247,6 +247,7 @@ def dislocate8(arr):
 	return r
 
 usableDislocators = [
+	('identity',lambda x:x/x.shape.numel()),
 	('gram',gram_matrix),
 	('gram-n',gram_matrix_no_norm),
 	('sum',dislocate1),
