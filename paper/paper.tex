@@ -96,10 +96,8 @@ have a size much larger than 3, such as 64 or 128.
 The 3nd and 4th dimensions are just spatial locations. 
 For a $512\times512$ image they are 512 and 512. 
 For intermediate arrays, these 2 dimensions are sometimes scaled down
-to half or even $\frac{1}{4}$ of the sizes of the image.
-
+to half or even $\frac{1}{4}$ of the sizes of the image. 
 The functions $F_1,F_2,F_3,...$ now have meaningful names such as relu\_1, conv\_2 now.
-[[[[Not actually necessary to know but insert your elaborations here]]]]
 
 The arrays after the initial image are called \emph{feature maps}, because their value means
 ``how much a feature x exists at position y and x''.
@@ -114,7 +112,13 @@ structured as iteratively solving an optimisation problem.
 The argument to optimise is the image as a multidimensional array,
 of size $1\times3\times512\times512$ for example.
 The interative solver can be many, but in our case it is 
-L-BFGS [[[[Maybe elaborate on L-BFGS here]]]]. 
+L-BFGS.It is an optimisation methodology that approximates the BFGS (Broyden - 
+Fletcher - Goldfarb - Shanno) algorithm using optimal amount of system 
+memory. This algorithm is famous for estimating the parameters in Machine 
+Learning domain occupying only linear space for performing the computation. 
+The main goal of L-BFGS is to minimize the differentiable scalar function f(x)
+over the non-constrained values of  a real valued vector (x). 
+ 
 The initial value of the argument could be either white noise or the content image,
 but the latter appeared to make the optimisation much easier.
 
@@ -166,7 +170,15 @@ the style losses derived from the output of \verb|conv_1| in Figure $\ref{stylel
 \end{figure}
 
 \subsection{Gram matrix}
-[[[[Elaborate on gram matrix here]]]]
+Gram matrix is responsible for extracting the style of an image by specifically computing the style loss 
+from the style image. For Gram matrix computation, feature vectors are flattened for efficient computation 
+that could be easily explained with the help of dot products where more similar the vectors are, lesser the 
+angle of difference between them indicating the closer feature relation between image vectors. More angle of 
+difference indicates the varied feature image vectors.By computing the dot product of all convolutional 
+feature maps with every other feature map yields Gram Matrix which is formulated as, 
+
+
+
 
 \subsection{Removing the spatial information in other ways}
 We think that the most brilliant aspect of the neural style transfer algorithm,
@@ -181,8 +193,11 @@ substitutes.
 For example, minimising the mean square errors between two Gram matrices could be seen as 
 a special case for minimising a Maximum Mean Discrepancy (MMD), which means other Maximum Mean Discrepacies
 could be used \cite{MMD}.
+Maximum Mean Discrepancy is the spatial probability measure distance that has enormous applications in 
+non-parametric testing and machine learning domain. It is defined as the distance between the neighbouring 
+mean elements in probability space. 
 
-[[[[Maybe Describe MMD here]]]]
+MMDk(P, Q)=||μP * μQ||H Where μ is  the mean in the probability measure space.
 
 For us, it seemed more natural to consider substitutes for the process itself of 
 transforming a feature map into a Gram matrix. 
@@ -233,7 +248,60 @@ so we ended up with the following (combinations) of sample statistics.
 We will also show that other factors, such that the outputs of which functions to derive the style 
 losses from are not very essential and somewhat belongs to tuning.
 
-\section{Conclusion and Future Work}
+\section{Conclusion}
+We have successfully implemented neural style transfer and generated the blende pastiche image
+using content image and style image. We have finally concluded that Artistic image is created
+with the help of pre-trained CNN. we did use vgg-19 model which is pre-trained model for object 
+and face detection and we saw how effectively it was able to detect the texture,and contour of
+the image. We determine the content loss by selecting a particular hidden layer’s activation. 
+We also determined the style loss with help of Gram Matrix of the hidden layer’s activations.
+Total style loss was computed by summing up all the style loss till the layers from where the
+content image is selected. Losses were evaluated by using gradient loss dynamically. This was
+computed using optimization algorithm of Broyden–Fletcher–Goldfarb–Shanno. This was done by 
+inputting the every iteration loss to the network.
+
+\section{Observation}
+We found out that we can modify how much style of style image can be inserted in the final image. 
+In order to do this, we determined how much content and style of the content image and style image
+need to be present. These can be used as hyper parameters to develop the final artistic image. 
+More weights of the style of the style image leads to more style and content of the style image
+are going to be present in the generated image vice-versa. Another hyper parameter is to choose
+the CNN hidden layer activation for the content image. This helps to decide how much content
+of content images needs to present in the generated image.
+
+\section{Discussion}
+We did find that by putting more weights to style image, more style and content of style images
+were getting displayed. By putting in the context, when weights are 105  then content and style
+of the content image is lost and style of style image is on the generated image but content of
+style image was distorted. In the another process, we did choose different hidden activation layer
+in CNN for content image. Ideally, we have selected the middle layer which is ‘CONV_4’. We can
+select any of convolution layer to see different result. We found out that by selecting the CONV_1,
+the textures of the content image are more prominent. We also found it amazing that after the certain
+number of iterations, we are getting blacked out image. It could be possible that losses would have
+become zero in this case which further altering the pixel values of the image. However, this is 
+something need to be researched Thoroughly.
+
+\section{Lessons Learnt}
+We were able to use Pytorch and Tensorflow libraries to implement the image stylization.
+We also understood how well CNN model works when image is given as input. We learned to 
+compute difference between the two images with the help of content and style. This can be 
+computed with the help of gradient loss.
+
+
+\section {Future Work}
+At present, we are applying style of the style image to the whole content image. We are thinking
+of using image segmentation technique[1] so to apply style on a particular segment of the image. 
+For example, there is a photograph of person wearing a jacket, applying this new technique, 
+we would style the jacket with help of some art and apply it back to original image. This means 
+old jacket becomes the new one.
+
+\section{Summary of Learning Outcome} 
+We learned some crucial concept of programming the project in python using pyTorch and Tensorflow. 
+We analysed and evaluated neural style transfer algorithm. We also learned to examined the research
+paper and how to link the research paper with other researches to form an innovation solutions. 
+We also learned to work in a team. We were able to reflect and use the course learning as our future
+work for the neural style transfer.
+
 
 \begin{thebibliography}{8}
 \bibitem{nst}
