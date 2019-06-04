@@ -7,6 +7,8 @@ Neural Transfer Using PyTorch
  
 **Edited by**: `Winston Herring <https://github.com/winston6>`_
 
+**Edited by**: `Xi Du`
+
 Introduction
 ------------
 
@@ -64,14 +66,11 @@ import copy
 import sys
 
 ######################################################################
-# Next, we need to choose which device to run the network on and import the
-# content and style images. Running the neural transfer algorithm on large
-# images takes longer and will go much faster when running on a GPU. We can
-# use ``torch.cuda.is_available()`` to detect if there is a GPU available.
-# Next, we set the ``torch.device`` for use throughout the tutorial. Also the ``.to(device)``
-# method is used to move tensors or modules to a desired device. 
+#GPU support is disabled because of lack of environments.
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device_str = "cpu"
+print('device is', device_str)
+device = torch.device(device_str)
 
 ######################################################################
 # Loading the Images
@@ -247,6 +246,7 @@ def dislocate8(arr):
 	return r
 
 usableDislocators = [
+	('identity',lambda x:x/x.shape.numel()),
 	('gram',gram_matrix),
 	('gram-n',gram_matrix_no_norm),
 	('sum',dislocate1),
@@ -582,6 +582,8 @@ if sys.argv[1] == "--one":
 	content_name = sys.argv[2]
 	style_name = sys.argv[3]
 	one_experiment()
+else:
+    print("See readme.txt for instructions")
 
 #plt.figure()
 #imshow(output, title='Output Image')

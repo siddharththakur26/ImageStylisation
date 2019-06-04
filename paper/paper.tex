@@ -39,7 +39,119 @@ Small data, Interpretability .}
 
 \section{Introduction}
 
-\section{Literature Review}
+Image stylization is the process that mimics the appeal of artistic media [8] 
+and converts input images into a stylized version. It is a research started with
+semi-automatic painting systems since 1990s [1] and can be used in many newly 
+developed applications in machine learning and artificial intelligence [5]. 
+This technique leads to a new form of communication [2]. With the use of image 
+stylization, the media users can keep stylistic consistency on media platforms 
+like Instagram or Twitter without obtaining skills in traditional artistic 
+techniques [16]. Image stylization allows users to generate picture in 
+traditional artistic styles, which had been expensive and time-consuming with 
+traditional techniques [19]. It shifts the way how the media users share 
+pictures on internet. At the beginning of the image stylization, which it 
+started in 1980s, procedural filters and patch-based algorithms were studied 
+and applied [2]. One example for the procedural filters is to refine image 
+with strokes placement algorithms, which a grid of rendering brush strokes is 
+placed over an image [13, 3]. Later on, patch-based synthesis was studied based 
+on texture recognition [4]. Moreover, these two methods have numerous 
+difficulties in further developments on the capture of complex nuances of an 
+artist’s style, and can only work for certain types of images [2]. However, 
+deep neural networks, which are developed as a general-purpose tool working 
+different computer vision problems [5].  The paper published by Leon Gatys in 
+2015 has proven that a simple neural network works well on the texture 
+recognition just like the patch-based synthesis algorithms [14]. 
+One of the applications is auto-painter for cartoon image generation and it 
+applies deep neural networks on image stylization [11]. These computational 
+bio-inspired neural networks mimic the basic structure of brain neurons. 
+Like the auto-painter, convolutional neural network is used in this paper 
+for developing a tool in image stylization. Neural networks, especially for 
+the deep artificial neural networks, has been widely studied and used in the 
+pattern recognition and machine learning in recent years [17]. Convolutional 
+neural network is one of the deep learning neural networks and have 
+substantially achieved the state-of-the-art accuracies of object recognition 
+[12]. This is the key in image stylization where the essential features in the 
+style image are extracted and applied on the input image. 
+
+This paper applies a pre-trained CNN, VGG-19, on image stylization and 
+extends its possibilities on image stylization. CNNs have a similar structure 
+as ordinary neural networks, which include neurons with learnable weights and 
+biases. CNNs are typically feed-forward architecture and widely used in computer
+vision tasks in recent years [12]. Its basic unit is single neuron. Each of 
+these neurons takes one or multiple inputs, conducts a dot product then 
+optimally follows it with a non-linearity [9]. The core mathematical equation 
+for CNN is a result derived from two functions by integration and this indicates 
+how one’s shape is changed by the other. CNN works in a way similar to broad 
+categorization [19]. When a CNN is used in image processing, every pixel of the 
+input image will be processed by a feature detector and a feature map is given 
+as the result. There will be very less, but critical features kept in the 
+feature map compared to the input image. Consequently, some key features might 
+be missed, and massive trainings are required for CNN’s accuracy on texture 
+capture. 
+
+\section{Related Work}
+
+In the field of image stylization, there are abundant related work found. 
+
+2.1 Image stylization using stroke-based and example-based methods 
+
+Both stroke-based and example-based methods have been studied since last century 
+for image stylization. For the stroke-based stylization, one typical method is 
+that brush strokes are aligned based on input image for varying color, size and 
+orientation [18]. Many methods, which are developed based on brush strokes, 
+normally either focus on one specific type of brush or provides a generic 
+framework [7]. For an instance, a brush stroke for a traditional Japanese 
+sumi-e style painting creation is modelled with the use of a 1D array of 
+bristles and this method can only generate a stylized image in grey scale [20]. 
+One major disadvantage of the stroke-based method is that it cannot generate 
+result automatically and provides tools to users as they can tweak the output 
+[7]. Many researches have also pointed out that the complex nuances of an 
+artist’s style are too hard to be captured in some degrees [2]. As for the 
+example-based methods, texture recognition and transfer are the core parts [18].
+One framework for this method is called the image analogies, which is a basic 
+reasoning process and consisted of two stages: a design phase with training 
+data and application phase with new images [6]. This method is still being 
+studied but is more complex than the neural network [2]. 
+
+2.2 Image stylization using convolutional neural networks
+
+An extension to the example-based method would be the texture synthesis using 
+convolutional neural networks developed by Leon Gatys [14]. This is the 
+pre-trained CNN used in the paper, which is also known as VGG-19. Gram matrices 
+are introduced on the feature maps to transfer the representations into a 
+stationary feature space [14]. There are also other works that have used 
+convolutional neural networks for image stylization [10, 15]. In the process of 
+image stylization, there is a trade-off between content and style matching, 
+which is the content loss [10]. Furthermore, there are some limitations of 
+using VGG networks due to the zero-padding used for convolutions in VGG network 
+[14]. Overall, convolutional neural networks have a better performance than 
+previous works on image stylization [21]. 
+
+References for intro and related work:
+[1] Haeberli, P. (1990). Paint by numbers: abstract image representations. SIGGRAPH Comput Graph, 24 (4), pp. 207-214. doi: 10.1145/97880.97902
+[2] Hertzmann, A. (2018). Image Stylization: History and Future (Part1). Adobe Research. Viewed at: https://research.adobe.com/news/image-stylization-history-and-future/
+[3] Hertzmann, A. (1998). Painterly rendering with curved brush strokes of multiple sizes. Proceedings of the 25th annual conference on Computer graphics and interactive techniques, pp. 453-460. doi: 10.1145/280814.280951 
+[4] Hertzmann, A. (2018). Image Stylization: History and Future (Part2). Adobe Research. Viewed at: https://research.adobe.com/news/image-stylization-history-and-future-part-2/
+[5] Hertzmann, A. (2018). Image Stylization: History and Future (Part3). Adobe Research. Viewed at: https://research.adobe.com/news/image-stylization-history-and-future-part-3/
+[6] Hertzmann, A., Jacobs, C. E., Oliver, N., Curless, B., Salesin, D. H. (2001). Image analogies. Proceedings of the 28th annual conference on Computer graphics and interactive techniques, pp. 327-340. doi: 10.1145/383259.383295 
+[7] Hegde, S., Gatzidis, C., Tian, F. (2012). Painterly rendering techniques: a state‐of‐the‐art review of current approaches. Wiley Online Library. doi: 10.1002/cav.1435
+[8] Kyprianidis, J.E., Collomosse, J., Wang, T., Isenberg, T. (2013). State of the art: a taxonomy of artistic stylization techniques for images and video. IEEE Trans Vis Comput Graphics, 19 (5), pp. 866-885. doi: 10.1109/TVCG.2012.160
+[9] Karpathy, A. (2019). Convolutional Neural Networks (CNNs/ConvNets). Stanford, CS231n Convolutional Neural Networks for Visual Recognition. Viewed at:  http://cs231n.github.io/convolutional-networks/
+[10] Krizhevsky, A., Sutskever, I., Hinton, G. E. (2012). ImageNet Classification with Deep Convolutional Neural Networks. NIPS proceedings. Viewed at: http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networ
+[11] Liu, Y., Qin, Z., Wan, T., Luo, Z. (2018). Auto-painter: Cartoon image generation from sketch by using conditional Wasserstein generative adversarial networks. Neurocomputing, Volume 311, pp. 78-87. ISSN 0925-2312. doi: 10.1016/j.neucom.2018.05.045. 
+[12] Liang, M., Hu, X. (2015). Recurrent Convolutional Neural Network for Object Recognition. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 3367-3375. Viewed at: http://openaccess.thecvf.com/content_cvpr_2015/html/Liang_Recurrent_Convolutional_Neural_2015_CVPR_paper.html
+[13] Litwinowicz, P. (1997). Processing images and video for an impressionist effect. Apple Computer, Inc., CA, DOI: 10.1145/258734.258893
+[14] Gatys, L. A., Ecker, A. S., Bethge, M. (2015), Texture Synthesis using Convolutional Neural Networks. Advances in Neural Information Processing Sytems 28 (NIPS 2015), Viewed at: http://papers.nips.cc/paper/5633-texture-synthesis-using-convolutional-neural-networks
+[15] Gatys, L. A., Ecker, A. S., Bethge, M. (2016). Image Style Transfer Using Convolutional Neural Networks. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 2414-2423. Viewed at: https://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Gatys_Image_Style_Transfer_CVPR_2016_paper.html
+[16] Rosin, P., Collomosse, J. (2013). Image and Video-Based Artistic Stylisation. Springer. doi: 10.1007/978-1-4471-4519-6 
+[17] Schmidhuber, J. (2014). Deep learning in neural networks: An overview. Neural Networks, Volume 61, pp. 85-117. ISSN 0893-6080. doi: 10.1016/j.neunet.2014.09.003.
+[18] Semmo, A., Limberger, D., Kyprianidis, J. E., Döllner, J. (2016). Image stylization by interactive oil paint filtering. Computers & Graphics, Volume 55, pp. 157-171, ISSN 0097-8493, doi: 10.1016/j.cag.2015.12.001.
+[19] Super Data Science (2018). Convolutional Neural Networks (CNN): Step 1 – Convolution Operation. Super Data Science. Viewed at: https://www.superdatascience.com/blogs/convolutional-neural-networks-cnn-step-1-convolution-operation/ 
+[20] Strassmann, S. (1986). Hairy brushes. Proceedings of the 13th Annual Conference on Computer Graphics and Interactive Techniques 1986, 20(4), pp.225–232.
+[21] Zhu, F., Yu, Y. (2018). Automatic Image Stylization using Deep Fully Convolutional Networks. The University of Hong Kong. Viewed at: https://arxiv.org/pdf/1811.10872.pdf
+
+
+
 
 \section{Method}
 
@@ -230,23 +342,47 @@ Other than an additional element-wise squaring, it is identical to the previous 
 To find more dislocators, let us consider \emph{how to describe a distribution} in general?
 The obvious answer is then sample statistics or estimators, like (sample) mean, (sample) standard deviation, 
 (sample) skewness, (sample) kurtosis and any moments.
-Unfortunately, we found that higher moments are too slow to compute for experiments,
+Unfortunately, we found that higher moments too slow to compute for our experiments,
 so we ended up with the following (combinations) of sample statistics.
-%\begin{enumerate}
-%\end{enumerate}
+\begin{enumerate}
+\item Mean and standard deviation of each type of feature. 
+That is, given a $1\times64\times256\times256$ feature map, 
+we compute an $1\times64\times2$ array.
+Standard deviation is favored over variance because standard deviations 
+are supposedly of the same unit of measure as the mean, 
+while variances are of a squared unit of measure.
+\item Mean, standard deviation and 4th central moment to the power of $1/4$. 
+That is, a $1\times64\times3$ array for a $1\times64\times256\times256$ feature map.
+\item Mean, standard deviation, 4th central moment to the power of $1/4$, 
+and 6th central moment to the power of $1/6$.
+\end{enumerate}
+We have found by experiment that odd-order moments did not work.
+6th central moments were already much slower to compute in practice 
+than Gram matrices.
+So we could only stop at the 6th moment due to limited experimental capacity.
 
-
+Unfortunately, straight forward histograms were not computationally feasible.
+Although the autograd facility could handle histograms in theory, we were not
+able to make histograms work in practice. Similarly, sorting or order statistics
+like medians were found to be computationally infeasible in practice.
 
 \section{Experiments and Discussion}
 
 \subsection{Reproducing the original result}
-
-\subsection{Varying the dislocator function}
+[[[[Fill the experiment part in demo here to show that we have reproduced result.
+Cite the original tutorial]]]] \cite{tut}
 
 \subsection{Varying the extraction points for losses}
 
-We will also show that other factors, such that the outputs of which functions to derive the style 
-losses from are not very essential and somewhat belongs to tuning.
+We will now show that within the general optimisation framework,
+steps other than the Gram matrix, 
+such as the outputs of which feature maps to derive the style 
+losses from are not very essential.
+
+\subsection{Varying the dislocator function}
+
+Now let us see something more interesting.
+
 
 \section{Conclusion}
 We have successfully implemented neural style transfer and generated the blende pastiche image
@@ -312,6 +448,8 @@ Li, Y., Wang, N., Liu, J., \& Hou, X. (2017). Demystifying Neural Style Transfer
 Doshi-Velez, F., \& Kim, B. (2017). Towards A Rigorous Science of Interpretable Machine Learning.
 \bibitem{pytorch}
 Paszke, A., Gross, S., Chintala, S., Chanan, G., Yang, E., DeVito, Z., Lin, Z., Desmaison, A., Antiga, L., \& Lerer, A. (2017). Automatic differentiation in PyTorch.
+\bibitem{tut}
+Jacq, A. (n.d.). Neural Transfer Using PyTorch (W. Herring, Ed.). Retrieved from https://pytorch.org/tutorials/advanced/neural\_style\_tutorial.html
 \end{thebibliography}
 \end{document}
 
